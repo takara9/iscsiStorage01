@@ -1,6 +1,8 @@
 iscsiStorage01 Cookbook
 =======================
-TODO: Enter the cookbook description here.
+ソフトレイヤーのiSCSIストレージ、パフォーマンス・ストレージ、エンデュランス・ストレージを接続して、マウントするためのクックブック
+
+
 
 e.g.
 This cookbook makes your favorite breakfast sandwich.
