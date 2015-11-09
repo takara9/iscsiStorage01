@@ -105,7 +105,7 @@ CHEFをインストールして、dummy のクックブックを作ってディ�
 # cd /var/chef/cookbooks/
 # git clone https://github.com/takara9/iscsiStorage01
 ```
-iSCSIストレージに必要な認証情報等をセットします。
+iSCSIストレージに必要な認証情報等をセットします。ここでは["iscsi_host"]="master"にしておきます。設定を変更した時の動作は後述しますので、説明は省略します。
 
 ```
 # vi attributes/default.rb
@@ -151,7 +151,7 @@ xvdb       202:16   0    2G  0 disk
 └─xvdb1    202:17   0    2G  0 part  [SWAP]
 ```
 
-# バックアップとしての設定方法 (["iscsi_host"]="backup")
+#### バックアップとしての設定方法 (["iscsi_host"]="backup")
 
 SoftLayerのiSCSIストレージは、単一障害点の無い専用ストレージ装置ですから、アクティブ・スタンバイの複数のサーバーと接続して、クラスタを構成できます。　
 マスターのiSCSIホストに、バックアップサーバーを追加する際に、attributes/default.rbに次の様に設定します。
@@ -207,6 +207,8 @@ tmpfs                     505924       0   505924    0% /sys/fs/cgroup
 /dev/xvda1                245679  133942    98630   58% /boot
 /dev/mapper/iscsimp1    20511312   45080 19401272    1% /mysql_data1
 ```
+この動作から、iSCSIストレージを利用することで、FC(Fiber Channel)を利用したHA構成と同様な
+構成が組めること解ったと思います。
 
 
 
