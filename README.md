@@ -1,40 +1,92 @@
 iscsiStorage01 Cookbook
 =======================
-ソフトレイヤーのiSCSIストレージ、パフォーマンス・ストレージ、エンデュランス・ストレージを接続して、マウントするためのクックブック
+ソフトレイヤーのパフォーマンス・ストレージやエンデュランス・ストレージのブロック・ストレージサービスは、iSCSIストレージとして提供されるサービスです。 このクックブックは、これらのiSCSIストレージの認証ファイルの作成、マルチパス設定、fstab設定、マウントまでを実行します。
 
 
-
-e.g.
-This cookbook makes your favorite breakfast sandwich.
-
-Requirements
+要件(Requirements)
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
 
-e.g.
-#### packages
-- `toaster` - iscsiStorage01 needs toaster to brown your bagel.
+#### CHEFのバージョン
+- Chef 12.5 以上 (これより前のバージョンで確認していません。)
 
-Attributes
+#### 対応オペレーティングシステム
+- CentOS 7.x - Minimal Install (64 bit) 
+- CentOS 6.x - Minimal Install (64 bit) 
+- Debian GNU/Linux 8.x jessie/Stable - Minimal Install (64 bit) 
+- Ubuntu Linux 14.04 LTS Trusty Tahr - Minimal Install (64 bit) 
+
+#### 対応ストレージ
+- Endurance Block Storage
+- Performance Block Storage
+このクックブックの適用前までに、ブロック・ストレージがオーダーが完了している必要があります。
+
+#### SoftLayer カスタマーポータルの操作
+- ブロック・ストレージがオーダーが完了していること
+- 仮想サーバーまたはベアメタルサーバーのオーダーが完了していること
+- ブロック・ストレージの Authorized Hosts に対象サーバーが含まれていること
+
+Authorized Hostsのリストへの追加方法は、ソフトレイヤー活用ガイドの次の章をご参照ねがいます。
+- [1.6.6 パフォーマンス・ストレージを利用するには？](https://www.change-makers.jp/post/10318)
+- [1.6.7 エンデュランス・ストレージを利用するには？](https://www.change-makers.jp/post/10319)
+
+
+属性(Attributes)
 ----------
-TODO: List your cookbook attributes here.
+サーバーインスタンスから、これらのiSCSIブロック・ストレージへアクセスするためには、次の属性が正しく設定されていなければなりません。
 
-e.g.
 #### iscsiStorage01::default
 <table>
   <tr>
     <th>Key</th>
     <th>Type</th>
     <th>Description</th>
-    <th>Default</th>
+    <th>備考</th>
   </tr>
   <tr>
-    <td><tt>['iscsiStorage01']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
+    <td>["iscsi_target_ipaddr"]</td>
+    <td>String</td>
+    <td>iSCSIのターゲットIP</td>
+    <td>必須</td>
+  </tr>
+  <tr>
+    <td>["iscsi_user_name"]</td>
+    <td>String</td>
+    <td>購入時付与されるユーザID</td>
+    <td>必須</td>
+  </tr>
+  <tr>
+    <td>["iscsi_user_password"]</td>
+    <td>String</td>
+    <td>ユーザIDのパスワード</td>
+    <td>必須</td>
+  </tr>
+  <tr>
+    <td>["initiator_name"]</td>
+    <td>String</td>
+    <td>iSCSI の World Wide ID</td>
+    <td>必須</td>
+  </tr>
+  <tr>
+    <td>["multipath_device"]["name1"]</td>
+    <td>String</td>
+    <td>マルチパスのメタデバイス名</td>
+    <td>必須 /dev/mapper/**** </td>
+  </tr>
+  <tr>
+    <td>["multipath_device"]["mount1"]</td>
+    <td>String</td>
+    <td>マウントポイント</td>
+    <td>必須 /data1など</td>
+  </tr>
+  <tr>
+    <td>["iscsi_host"]</td>
+    <td>String</td>
+    <td>択一 master/slave</td>
+    <td>選択必須</td>
   </tr>
 </table>
+
+
 
 Usage
 -----

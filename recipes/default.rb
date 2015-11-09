@@ -4,10 +4,12 @@
 # Recipe:: default
 #
 
+#
+# iSCSIとマルチパスを利用するための
+# 追加パッケージの導入
+#
 case node['platform']
-#
-# Ubuntu,Debian の追加モジュール
-#
+# === Debian系 ===
 when 'ubuntu','debian'
   execute 'apt-get update' do
     command 'apt-get update'
@@ -21,6 +23,7 @@ when 'ubuntu','debian'
       action :install
     end
   end
+# === RedHat系 ===
 when 'centos','redhat'
   execute 'yum update' do
     command 'yum update -y'
@@ -34,6 +37,7 @@ when 'centos','redhat'
       action :install
     end
   end
+
   # CentOS6 ではパスが異なっており、コマンドが動作しないため修正
   if node['platform_version'].to_i == 6 then
     execute 'ln -s /sbin/iscsid /usr/sbin/iscsid' do
@@ -45,43 +49,44 @@ when 'centos','redhat'
 end
 
 
-case node['platform']
 # 
 # SoftLayerでは最初からモジュールがインストール
 # されていて起動した状態となっているので停止する。
 # 
-#
+case node['platform']
+# === Debian系 ===
 when 'ubuntu','debian'
   execute 'stop open-iscsi' do
     command "service open-iscsi stop"
     ignore_failure true
   end
 
-# 後で利用するため、ここは定義だけ
+  # 後で利用するため、ここは定義だけ
   service "open-iscsi" do
     supports :status => true, :start => true, :stop => true, :restart => true
     action [ :enable, :stop]
   end
 
-# 後で利用するため、ここは定義だけ
+  # 後で利用するため、ここは定義だけ
   service "multipath-tools" do
     supports :status => true, :start => true, :stop => true, :restart => true
     action [ :enable, :stop]
   end
 
+# === RedHat系 ===
 when 'centos','redhat'
   execute 'stop iscsi' do
     command "service iscsi stop"
     ignore_failure true
   end
 
-# 後で利用するため、ここは定義だけ
+  # 後で利用するため、ここは定義だけ
   service "iscsi" do
     supports :status => true, :start => true, :stop => true, :restart => true
     action [ :enable, :stop]
   end
 
-# 後で利用するため、ここは定義だけ
+  # 後で利用するため、ここは定義だけ
   service "multipathd" do
     supports :status => true, :start => true, :stop => true, :restart => true
     action [ :enable, :stop]
@@ -99,7 +104,7 @@ iscsi_target_ipaddr = node["iscsi_target_ipaddr"]
 device_name1 = node["multipath_device"]["name1"]
 device_mount_point1 = node["multipath_device"]["mount1"]
 
-# SCSIイニシエーター名ファイルを作成
+# iSCSIイニシエーター名ファイルを作成
 file "/etc/iscsi/initiatorname.iscsi" do
   owner "root"
   group "root"
