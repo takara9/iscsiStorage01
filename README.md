@@ -4,7 +4,7 @@ iscsiStorage01 Cookbook
 
 システム構成
 ------------
-[iSCSIストレージ接続システム構成](doc/iscsi_config.png)
+![iSCSIストレージ接続システム構成](doc/iscsi_config.png)
 
 
 要件(Requirements)
